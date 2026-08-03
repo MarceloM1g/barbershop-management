@@ -3,33 +3,16 @@
 import { useState, useEffect } from "react";
 import LoadingScreen from "@/components/ui/Loadingscreen";
 import { House } from "lucide-react";
-
-interface Appointment {
-    id: string;
-    scheduledAt: string;
-
-    client: {
-        name: string;
-    };
-
-    services: {
-        service: {
-            id: string;
-            name: string;
-            price: string;
-        };
-    }[];
-}
+import Link from 'next/link';
 
 export default function BarberPage() {
     const [name, setName] = useState('');
+    const [toastError, setToastError] = useState('');
     const [loading, setLoading] = useState(true);
-    const [toastError, setToastError] = useState("");
-    const [appointmentsList, setAppointmentsList] = useState<Appointment[]>([]);
 
     function toastErrorMessage(text: string) {
         /* setToast('') */
-        setToastError(text);
+        setToastError(text)
 
         setTimeout(() => {
             setToastError('');
@@ -37,7 +20,7 @@ export default function BarberPage() {
     }
 
     useEffect(() => {
-        const loadBarber = async () => {
+        const loadUser = async () => {
             try {
                 const response = await fetch('/api/users/me', {
                     method: 'GET',
@@ -58,38 +41,22 @@ export default function BarberPage() {
             }
         }
 
-        loadBarber();
-    }, []);
-
-    useEffect(() => {
-        async function loadAppointments() {
-            try {
-                const response = await fetch('/api/appointments/barber', {
-                    method: 'GET'
-                });
-
-                if (!response.ok) {
-                    toastErrorMessage('Erro ao carregar agendamentos');
-                    return;
-                }
-
-                const data = await response.json();
-                setAppointmentsList(data.appointments);
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        loadAppointments();
+        loadUser();
     }, []);
 
     return (
-        <main className="mx-auto mt-5 max-w-7xl px-4">
+        <div>
             {loading && (
                 <LoadingScreen />
             )}
+
+            {/*             {toast && (
+                <div className="fixed top-20 left-1/2 z-[9999] -translate-x-1/2 md:left-auto md:right-4 md:translate-x-0 flex items-center gap-3 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl shadow-xl max-w-sm w-full animate-fade-in">
+                    <span className="text-sm font-medium tracking-wide">
+                        {toast}
+                    </span>
+                </div>
+            )} */}
 
             {toastError && (
                 <div className="fixed top-20 left-1/2 z-[9999] -translate-x-1/2 md:left-auto md:right-4 md:translate-x-0 flex items-center gap-3 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl shadow-xl max-w-sm w-full animate-fade-in">
@@ -110,31 +77,32 @@ export default function BarberPage() {
                 <p className="text-xl mt-3 text-[#f7f7f7]">Olá, {name}</p>
             </div>
 
-            <div className="mx-auto mt-5 max-w-7xl px-4 relative overflow-hidden rounded-3xl p-10 sm:p-14  bg-linear-to-t from-[#02090f] to-[#0a0f16] border border-[#333]">
-                <h1 className="text-3xl font-bold mb-8">
-                    Agendamentos
-                </h1>
+            <div className="mx-auto mt-8 max-w-7xl px-4">
+                <div className="relative overflow-hidden rounded-3xl p-10 sm:p-14  bg-linear-to-t from-[#02090f] to-[#0a0f16] border border-[#333]">
 
-                <ul className="mt-2">
-                    {appointmentsList.map((appointment) => (
-                        <li className="bg-[#02090f] rounded-xl py-8 px-5 mt-5" key={appointment.id}>
-                            <h2>
-                                {appointment.client.name}
-                            </h2>
+                    <div className="absolute -right-10 -top-10 h-72 w-72 rounded-full" />
 
-                            <p>
-                                {new Date(appointment.scheduledAt).toLocaleString("pt-BR")}
-                            </p>
+                    <div className="relative">
 
-                            <ul>
-                                {appointment.services.map((item) => (
-                                    <li key={item.service.id}>{item.service.name}</li>
-                                ))}
-                            </ul>
-                        </li>
-                    ))}
-                </ul>
+                        <h1 className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
+                            Veja os seus agendamentos
+                        </h1>
+
+                        <p className="mt-4 max-w-md text-zinc-400">
+                            Veja os seus agendamentos e horários
+                        </p>
+
+                        <div className="mt-8 flex flex-wrap items-center gap-3">
+                            <Link
+                                href="/dashboard/barber/agendamentos"
+                                className="rounded-full bg-[#1a9fff] px-6 py-3 font-semibold text-[#f7f7f7] transition hover:bg-[#56abff] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+                            >
+                                Vizualizar Agendamento
+                            </Link>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </main>
+        </div>
     );
 }

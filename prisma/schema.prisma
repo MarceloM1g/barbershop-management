@@ -64,6 +64,6 @@ enum Role {
 enum Status {
   PENDING
   CONFIRMED
-  CANCELED
+  CANCELLED
   FINISHED
 }
