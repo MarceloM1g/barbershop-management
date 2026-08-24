@@ -3,16 +3,16 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
-    const token = (await cookies()).get("token")?.value;
-    const user = verifyAuthToken(token);
+  const token = (await cookies()).get("token")?.value;
+  const user = verifyAuthToken(token);
 
-    if (!user) {
-        redirect("/login");
-    }
+  if (!user) {
+    redirect("/login");
+  }
 
-    if (user.role === "BARBER") {
-        redirect("/dashboard/barber");
-    }
+  if (user.role === "BARBER") {
+    redirect("/dashboard/barber");
+  }
 
-    redirect("/dashboard/client");
+  redirect("/dashboard/client");
 }

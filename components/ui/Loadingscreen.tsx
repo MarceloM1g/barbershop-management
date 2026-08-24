@@ -1,39 +1,39 @@
 import { useEffect, useState } from "react";
 
 const STATUS_MESSAGES = [
-    "conectando ao servidor",
-    "autenticando sessão",
-    "sincronizando dados",
-    "compilando módulos",
-    "preparando ambiente",
-    "preparando tudo pra você",
+  "conectando ao servidor",
+  "autenticando sessão",
+  "sincronizando dados",
+  "compilando módulos",
+  "preparando ambiente",
+  "preparando tudo pra você",
 ];
 
 export default function LoadingScreen() {
-    const [statusIndex, setStatusIndex] = useState(0);
-    const [progress, setProgress] = useState(0);
+  const [statusIndex, setStatusIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
 
-    useEffect(() => {
-        const statusTimer = setInterval(() => {
-            setStatusIndex((i) => (i + 1) % STATUS_MESSAGES.length);
-        }, 1800);
-        return () => clearInterval(statusTimer);
-    }, []);
+  useEffect(() => {
+    const statusTimer = setInterval(() => {
+      setStatusIndex((i) => (i + 1) % STATUS_MESSAGES.length);
+    }, 1800);
+    return () => clearInterval(statusTimer);
+  }, []);
 
-    useEffect(() => {
-        const progressTimer = setInterval(() => {
-            setProgress((p) => {
-                if (p >= 100) return 0;
-                const step = p < 70 ? Math.random() * 6 + 2 : Math.random() * 2 + 0.5;
-                return Math.min(100, p + step);
-            });
-        }, 220);
-        return () => clearInterval(progressTimer);
-    }, []);
+  useEffect(() => {
+    const progressTimer = setInterval(() => {
+      setProgress((p) => {
+        if (p >= 100) return 0;
+        const step = p < 70 ? Math.random() * 6 + 2 : Math.random() * 2 + 0.5;
+        return Math.min(100, p + step);
+      });
+    }, 220);
+    return () => clearInterval(progressTimer);
+  }, []);
 
-    return (
-        <div className="ls-root">
-            <style>{`
+  return (
+    <div className="ls-root">
+      <style>{`
         .ls-root {
           position: fixed;
           inset: 0;
@@ -203,33 +203,72 @@ export default function LoadingScreen() {
         }
       `}</style>
 
-           {/*  <div className="ls-grid" /> */}
-            <div className="ls-glow" />
+      {/*  <div className="ls-grid" /> */}
+      <div className="ls-glow" />
 
-            <div className="ls-content">
-                <svg className="ls-mark" viewBox="0 0 96 96">
-                    <rect className="layer-1" x="10" y="16" width="76" height="18" rx="3" />
-                    <rect className="layer-2" x="10" y="39" width="76" height="18" rx="3" />
-                    <rect className="layer-3" x="10" y="62" width="76" height="18" rx="3" />
-                    <foreignObject x="0" y="0" width="96" height="96">
-                        <div style={{ position: "relative", width: "100%", height: "100%" }}>
-                            <div className="ls-scanline" />
-                        </div>
-                    </foreignObject>
-                </svg>
-
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
-                    <div className="ls-wordmark">carregando</div>
-                    <div className="ls-status">{STATUS_MESSAGES[statusIndex]}</div>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-                    <div className="ls-track">
-                        <div className="ls-fill" style={{ width: `${progress}%` }} />
-                    </div>
-                    <div className="ls-percent">{String(Math.round(progress)).padStart(2, "0")}%</div>
-                </div>
+      <div className="ls-content">
+        <svg className="ls-mark" viewBox="0 0 96 96">
+          <rect
+            className="layer-1"
+            x="10"
+            y="16"
+            width="76"
+            height="18"
+            rx="3"
+          />
+          <rect
+            className="layer-2"
+            x="10"
+            y="39"
+            width="76"
+            height="18"
+            rx="3"
+          />
+          <rect
+            className="layer-3"
+            x="10"
+            y="62"
+            width="76"
+            height="18"
+            rx="3"
+          />
+          <foreignObject x="0" y="0" width="96" height="96">
+            <div
+              style={{ position: "relative", width: "100%", height: "100%" }}
+            >
+              <div className="ls-scanline" />
             </div>
+          </foreignObject>
+        </svg>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 14,
+          }}
+        >
+          <div className="ls-wordmark">carregando</div>
+          <div className="ls-status">{STATUS_MESSAGES[statusIndex]}</div>
         </div>
-    );
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <div className="ls-track">
+            <div className="ls-fill" style={{ width: `${progress}%` }} />
+          </div>
+          <div className="ls-percent">
+            {String(Math.round(progress)).padStart(2, "0")}%
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

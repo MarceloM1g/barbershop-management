@@ -5,11 +5,11 @@ import Navbar from "./Navbar";
 import DashboardNavbar from "./DashboardNavbar";
 
 export default function NavbarProvider() {
-    const pathname = usePathname();
+  const pathname = usePathname();
 
-    if (pathname.startsWith("/dashboard")) {
-        return <DashboardNavbar />;
-    }
+  if (pathname.startsWith("/dashboard")) {
+    return <DashboardNavbar />;
+  }
 
-    return <Navbar />;
+  return <Navbar />;
 }
