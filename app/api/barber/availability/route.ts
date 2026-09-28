@@ -64,7 +64,11 @@ export async function GET(req: NextRequest) {
       return blocked.time === null;
     });
 
-    const now = new Date();
+    const now = new Date(
+      new Date().toLocaleString("en-US", {
+        timeZone: "America/Sao_Paulo",
+      }),
+    );
 
     const displayTimes = times.map((time) => {
       const slotDate = new Date(`${date}T${time}:00`);

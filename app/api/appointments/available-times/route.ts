@@ -46,28 +46,13 @@ export async function GET(req: NextRequest) {
     });
 
     /* Formatação */
-    /*     const occupiedTimes = busySlots.map((appointment) => {
+    const occupiedTimes = busySlots.map((appointment) => {
       return appointment.scheduledAt.toLocaleTimeString("pt-BR", {
         timeZone: "America/Sao_Paulo",
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
       });
-    }); */
-
-    const occupiedTimes = busySlots.map((appointment) => {
-      const formatted = appointment.scheduledAt.toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
-
-      console.log({
-        raw: appointment.scheduledAt,
-        formatted,
-      });
-
-      return formatted;
     });
 
     const blockedSlots = await prisma.blockedTime.findMany({
@@ -85,7 +70,11 @@ export async function GET(req: NextRequest) {
       return blocked.time === null;
     });
 
-    const now = new Date();
+    const now = new Date(
+      new Date().toLocaleString("en-US", {
+        timeZone: "America/Sao_Paulo",
+      }),
+    );
 
     /* Filtrando os horários */
     const availableTimes = times.filter((time) => {
