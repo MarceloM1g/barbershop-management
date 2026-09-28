@@ -1,7 +1,7 @@
+import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { times } from "@/constants/schedule";
-import { NextRequest, NextResponse } from "next/server";
 import { verifyAuthToken } from "@/lib/auth-token";
+import { times } from "@/constants/schedule";
 
 export async function GET(req: NextRequest) {
   try {
@@ -15,29 +15,35 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    if (user.role !== "CLIENT") {
+    if (user.role !== "BARBER") {
       return NextResponse.json({ error: "Acesso negado" }, { status: 403 });
     }
 
     const searchParams = req.nextUrl.searchParams;
-
-    const barberId = searchParams.get("barberId");
     const date = searchParams.get("date");
 
-    if (!barberId || !date) {
+    if (!user.userId || !date) {
       return NextResponse.json(
-        { error: "Os parâmetros 'barberId' e 'date' são obrigatórios." },
+        { error: "Usuário e data são obrigatórios." },
         { status: 400 },
       );
     }
 
+    const barberId = user.userId;
+
+    const blockedTimes = await prisma.blockedTime.findMany({
+      where: {
+        barberId: user.userId,
+        date,
+      },
+    });
+
     const inicioDoDia = new Date(`${date}T00:00:00`);
     const fimDoDia = new Date(`${date}T23:59:59`);
 
-    /* Buscar Horários que já estão marcados */
     const busySlots = await prisma.appointment.findMany({
       where: {
-        barberId: barberId,
+        barberId,
         scheduledAt: {
           gte: inicioDoDia,
           lt: fimDoDia,
@@ -45,7 +51,6 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    /* Formatação */
     const occupiedTimes = busySlots.map((appointment) => {
       return appointment.scheduledAt.toLocaleTimeString("pt-BR", {
         hour: "2-digit",
@@ -54,40 +59,50 @@ export async function GET(req: NextRequest) {
       });
     });
 
-    const blockedSlots = await prisma.blockedTime.findMany({
-      where: {
-        barberId,
-        date,
-      },
-    });
-
-    const blockedTimes = blockedSlots.map((blocked) => {
-      return blocked.time;
-    });
-
-    const isDayBlocked = blockedSlots.some((blocked) => {
+    const isDayBlocked = blockedTimes.some((blocked) => {
       return blocked.time === null;
     });
 
     const now = new Date();
 
-    /* Filtrando os horários */
-    const availableTimes = times.filter((time) => {
+    const displayTimes = times.map((time) => {
       const slotDate = new Date(`${date}T${time}:00`);
 
       if (slotDate < now) {
-        return false;
+        return {
+          time,
+          status: "PAST",
+        };
+      }
+
+      if (occupiedTimes.includes(time)) {
+        return {
+          time,
+          status: "OCCUPIED",
+        };
       }
 
       if (isDayBlocked) {
-        return false;
+        return {
+          time,
+          status: "BLOCKED",
+        };
       }
 
-      /* Removendo horários ocupados e bloqueados */
-      return !occupiedTimes.includes(time) && !blockedTimes.includes(time);
+      if (blockedTimes.some((blocked) => blocked.time === time)) {
+        return {
+          time,
+          status: "BLOCKED",
+        };
+      }
+
+      return {
+        time,
+        status: "AVAILABLE",
+      };
     });
 
-    return NextResponse.json(availableTimes);
+    return NextResponse.json(displayTimes);
   } catch (error) {
     console.log(error);
 

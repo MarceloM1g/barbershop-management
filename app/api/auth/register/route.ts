@@ -13,7 +13,12 @@ export async function POST(req: Request) {
       );
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const emailNormalized = email.trim().toLowerCase();
+
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: "E-mail inválido" }, { status: 400 });
+    }
 
     const existingUser = await prisma.user.findUnique({
       where: {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import LoadingScreen from "@/components/ui/Loadingscreen";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Calendar } from "lucide-react";
 
 interface Appointment {
@@ -24,6 +25,7 @@ interface Appointment {
 export default function Agendamentos() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [loadingAppointments, setLoadingAppointments] = useState(true);
   const [toastError, setToastError] = useState("");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [appointmentsList, setAppointmentsList] = useState<Appointment[]>([]);
@@ -94,7 +96,7 @@ export default function Agendamentos() {
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading(false);
+        setLoadingAppointments(false);
       }
     }
     loadAppointments();
@@ -159,14 +161,18 @@ export default function Agendamentos() {
       </div>
       {/* x-auto mt-5 max-w-4xl px-4 relative overflow-hidden rounded-3xl p-10 sm:p-14  bg-linear-to-t from-[#02090f] to-[#0a0f16] border border-[#333] */}
       <div className="mx-auto mt-2 max-w-4xl px-4 relative overflow-hidden rounded-3xl p-2">
-        <ul className="mt-6 space-y-4">
-          {appointmentsList.map((appointment) => {
-            const date = new Date(appointment.scheduledAt);
+        {loadingAppointments ? (
+          <LoadingSpinner />
+        ) : (
+          <ul className="mt-6 space-y-4">
+            {appointmentsList.length > 0 ? (
+              appointmentsList.map((appointment) => {
+                const date = new Date(appointment.scheduledAt);
 
-            return (
-              <li
-                key={appointment.id}
-                className="
+                return (
+                  <li
+                    key={appointment.id}
+                    className="
           group relative overflow-hidden
           rounded-2xl
           bg-[#0f1924]
@@ -176,13 +182,13 @@ export default function Agendamentos() {
           hover:border-white/15
           hover:bg-[#09131c]
         "
-              >
-                {/* Botão cancelar */}
-                <button
-                  type="button"
-                  onClick={() => setAppointmentToCancel(appointment.id)}
-                  aria-label="Cancelar agendamento"
-                  className="
+                  >
+                    {/* Botão cancelar */}
+                    <button
+                      type="button"
+                      onClick={() => setAppointmentToCancel(appointment.id)}
+                      aria-label="Cancelar agendamento"
+                      className="
             absolute right-4 top-4
             flex h-9 w-9 items-center justify-center
             rounded-lg
@@ -194,66 +200,72 @@ export default function Agendamentos() {
             hover:bg-red-500/10
             hover:text-red-400
           "
-                >
-                  {/* <X size={17} strokeWidth={2} /> */}
-                  ...
-                </button>
+                    >
+                      {/* <X size={17} strokeWidth={2} /> */}
+                      ...
+                    </button>
 
-                {/* Cliente */}
-                <div className="pr-12">
-                  <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-200">
-                    Cliente
-                  </p>
-                  <h2 className="mt-1 text-lg font-semibold text-white">
-                    {appointment.client.name}
-                  </h2>
-                </div>
+                    {/* Cliente */}
+                    <div className="pr-12">
+                      <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-200">
+                        Cliente
+                      </p>
+                      <h2 className="mt-1 text-lg font-semibold text-white">
+                        {appointment.client.name}
+                      </h2>
+                    </div>
 
-                {/* Data e horário */}
-                <div className="mt-5 flex items-center gap-2">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#1a9fff]">
-                    <Calendar />
-                  </div>
+                    {/* Data e horário */}
+                    <div className="mt-5 flex items-center gap-2">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#1a9fff]">
+                        <Calendar />
+                      </div>
 
-                  <div>
-                    <p className="text-2xl font-semibold text-slate-200">
-                      {date.toLocaleTimeString("pt-BR", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
+                      <div>
+                        <p className="text-2xl font-semibold text-slate-200">
+                          {date.toLocaleTimeString("pt-BR", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
 
-                    <p className="mt-0.5 text-sm text-slate-400">
-                      {date.toLocaleDateString("pt-BR", {
-                        weekday: "long",
-                        day: "2-digit",
-                        month: "long",
-                      })}
-                    </p>
-                  </div>
-                </div>
+                        <p className="mt-0.5 text-sm text-slate-400">
+                          {date.toLocaleDateString("pt-BR", {
+                            weekday: "long",
+                            day: "2-digit",
+                            month: "long",
+                          })}
+                        </p>
+                      </div>
+                    </div>
 
-                {/* Serviços */}
-                <div className="mt-5 border-t border-white/5 pt-4">
-                  <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-200">
-                    Serviços
-                  </p>
+                    {/* Serviços */}
+                    <div className="mt-5 border-t border-white/5 pt-4">
+                      <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-200">
+                        Serviços
+                      </p>
 
-                  <div className="text-sm text-slate-300">
-                    {appointment.services.map((item, index) => (
-                      <span key={item.service.id}>
-                        {item.service.name}
-                        {index < appointment.services.length - 1 && (
-                          <span className="mx-2 text-slate-600">·</span>
-                        )}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+                      <div className="text-sm text-slate-300">
+                        {appointment.services.map((item, index) => (
+                          <span key={item.service.id}>
+                            {item.service.name}
+                            {index < appointment.services.length - 1 && (
+                              <span className="mx-2 text-slate-600">·</span>
+                            )}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </li>
+                );
+              })
+            ) : (
+              <p className="col-span-3 text-center text-gray-400">
+                Você não possui agendamentos no momento
+              </p>
+            )}
+          </ul>
+        )}
 
         {appointmentToCancel && (
           <div

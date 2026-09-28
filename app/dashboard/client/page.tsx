@@ -2,13 +2,39 @@
 
 import { useState, useEffect } from "react";
 import LoadingScreen from "@/components/ui/Loadingscreen";
-import { House } from "lucide-react";
+import { House, Calendar } from "lucide-react";
 import Link from "next/link";
+
+type ClientAppointments = {
+  id: string;
+  userId: string;
+  barberId: string;
+  scheduledAt: string;
+
+  barber: {
+    id: string;
+    name: string;
+  };
+
+  services: {
+    service: {
+      id: string;
+      name: string;
+      price: string;
+    };
+  }[];
+};
 
 export default function ClientPage() {
   const [name, setName] = useState("");
   const [toastError, setToastError] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const [clientAppointments, setClientAppointments] = useState<
+    ClientAppointments[]
+  >([]);
+
+  const lastAppointment = clientAppointments[0];
 
   function toastErrorMessage(text: string) {
     /* setToast('') */
@@ -43,8 +69,31 @@ export default function ClientPage() {
     loadUser();
   }, []);
 
+  useEffect(() => {
+    async function getClientAppointments() {
+      try {
+        const response = await fetch("/api/appointments/client", {
+          method: "GET",
+        });
+
+        if (!response.ok) {
+          toastErrorMessage("Erro ao listar seus agendamentos");
+          return;
+        }
+
+        const data = await response.json();
+        console.log(data.appointments);
+        setClientAppointments(data.appointments);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    getClientAppointments();
+  }, []);
+
   return (
-    <div>
+    <main>
       {loading && <LoadingScreen />}
 
       {/*             {toast && (
@@ -86,7 +135,7 @@ export default function ClientPage() {
       </div>
 
       <div className="mx-auto mt-8 max-w-7xl px-4">
-        <div className="relative overflow-hidden rounded-3xl p-10 sm:p-14  bg-linear-to-t from-[#02090f] to-[#0a0f16] border border-[#333]">
+        <div className="relative overflow-hidden rounded-xl p-10 sm:p-14 bg-linear-to-t from-[#02090f] to-[#0a0f16] border border-[#72bff7]">
           <div className="absolute -right-10 -top-10 h-72 w-72 rounded-full" />
 
           <div className="relative">
@@ -102,7 +151,7 @@ export default function ClientPage() {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/dashboard/client/agendar"
-                className="rounded-full bg-[#1a9fff] px-6 py-3 font-semibold text-[#f7f7f7] transition hover:bg-[#56abff] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+                className="flex items-center justify-center rounded-md border-2 border-[#1a9fff] bg-[#02090f] px-6 py-3 font-bold transition"
               >
                 Agendar horário
               </Link>
@@ -110,6 +159,42 @@ export default function ClientPage() {
           </div>
         </div>
       </div>
-    </div>
+
+      <div className="mx-auto max-w-4xl mt-5 px-4">
+        <ul className="bg-linear-to-b from-[#0a0f16] to-[#02090f] px-4 py-5 rounded-xl space-y-4">
+          <h2 className="text-xl text-white">Ultimo agendamento</h2>
+          {lastAppointment ? (
+            <div>
+              <div>
+                <p className="text-base text-white">Barbeiro</p>
+                <p className="text-lg mb-4 font-semibold text-[#1a9fff]">
+                  {lastAppointment.barber.name}
+                </p>
+              </div>
+
+              <div className="h-px mt-5 mb-5 bg-gradient-to-r from-transparent via-[#333] to-transparent"></div>
+
+              <div className="flex">
+                <Calendar className="text-[#1a9fff]" size={20} />
+                <p className="text-white flex ml-2">
+                  Data:{" "}
+                  {new Date(lastAppointment.scheduledAt).toLocaleString(
+                    "pt-BR",
+                  )}
+                </p>
+              </div>
+
+              {lastAppointment.services.map(({ service }) => (
+                <div key={service.id} className="text-white">
+                  {service.name} — R$ {service.price}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-zinc-400">Você ainda não possui agendamentos.</p>
+          )}
+        </ul>
+      </div>
+    </main>
   );
 }

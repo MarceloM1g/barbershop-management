@@ -17,6 +17,8 @@ export default function Register() {
 
   const router = useRouter();
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   async function register(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -27,6 +29,11 @@ export default function Register() {
       confirmPassword.trim() === ""
     ) {
       toastErrorMessage("Preencha todos os campos");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      toastErrorMessage("Digite um e-mail válido");
       return;
     }
 

@@ -2,41 +2,43 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import Logo from "@/assets/logo.png";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="fixed left-0 top-0 z-50 w-full bg-[#111] text-[#eee]">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="text-xl font-bold uppercase">
-            <Link href="/">Logo</Link>
-          </div>
+    <header className="h-20 bg-[#171D25] border-b border-[#333]">
+      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
+        {/* Logo */}
+        <div className="text-xl font-bold uppercase">
+          <Link href="/">
+            <Image src={Logo} width={70} height={70} alt="Logo" />
+          </Link>
+        </div>
 
-          <div className="hidden md:flex space-x-6">
-            <Link href="/" className="hover:text-blue-400">
-              Home
-            </Link>
-            {/* <Link href="/sobre" className="hover:text-blue-400">About</Link> */}
-          </div>
+        <div className="hidden md:flex space-x-6">
+          <Link href="/" className="hover:text-blue-400">
+            Home
+          </Link>
+          {/* <Link href="/sobre" className="hover:text-blue-400">About</Link> */}
+        </div>
 
-          <div className="hidden md:flex items-center gap-4">
-            <Link
-              href="/login"
-              className="px-4 py-2 font-bold hover:text-blue-400"
-            >
-              Entrar
-            </Link>
+        <div className="hidden md:flex items-center gap-4">
+          <Link
+            href="/login"
+            className="px-4 py-2 font-bold hover:text-blue-400"
+          >
+            Entrar
+          </Link>
 
-            <Link
-              href="/register"
-              className="border rounded-xl px-4 py-2 hover:bg-white hover:text-black transition"
-            >
-              Criar uma Conta
-            </Link>
-          </div>
+          <Link
+            href="/register"
+            className="border rounded-xl px-4 py-2 hover:bg-white hover:text-black transition"
+          >
+            Criar uma Conta
+          </Link>
 
           {/* Hambúrguer */}
           <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
@@ -67,7 +69,7 @@ function Navbar() {
           </div>
         )}
       </div>
-    </nav>
+    </header>
   );
 }
 

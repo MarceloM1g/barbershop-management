@@ -22,7 +22,7 @@ export function verifyAuthToken(token?: string): AuthUser | null {
     // Importante! Verificar se o token que foi gerado na hora do login, é o mesmo que o token do usuário atualmente
     const payload = jwt.verify(token, process.env.JWT_SECRET!);
 
-    // Verificando se payload não é uma string
+    // Verificando se payload é uma string, se for retornar null
     if (typeof payload === "string") {
       return null;
     }

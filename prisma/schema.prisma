@@ -17,6 +17,8 @@ model User {
 
   clientAppointments Appointment[] @relation("ClientAppointments")
   barberAppointments Appointment[] @relation("BarberAppointments")
+
+  blockedTimes BlockedTime[]
 }
 
 model Appointment {
@@ -30,7 +32,7 @@ model Appointment {
   client User @relation("ClientAppointments", fields: [userId], references: [id])
   barber User @relation("BarberAppointments", fields: [barberId], references: [id])
 
-  services   AppointmentService[]
+  services AppointmentService[]
 }
 
 model AppointmentService {
@@ -54,6 +56,19 @@ model Service {
   displayOrder Int     @default(0)
 
   appointments AppointmentService[]
+}
+
+model BlockedTime {
+  id        String   @id @default(cuid())
+  barberId  String
+  date      String
+  time      String?
+  createdAt DateTime @default(now())
+
+  barber User @relation(fields: [barberId], references: [id])
+
+  @@unique([barberId, date, time])
+  @@index([barberId, date])
 }
 
 enum Role {

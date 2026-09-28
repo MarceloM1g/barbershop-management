@@ -50,7 +50,7 @@ export default function Navbar() {
   }
 
   return (
-    <header className="h-20 bg-[#171D25] border-b border-[#333]">
+    <header className="h-20 bg-[#171D25] border-b border-[#243D4F]">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
         <Link href="/">
           <Image src={Logo} width={70} height={70} alt="Logo" />

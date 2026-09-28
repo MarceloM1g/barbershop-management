@@ -27,14 +27,11 @@ export function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    if (
-      (pathname === "/dashboard/client" && user.role !== "CLIENT") ||
-      (pathname === "/dashboard/client/agendar" && user.role !== "CLIENT")
-    ) {
+    if (pathname.startsWith("/dashboard/client") && user.role !== "CLIENT") {
       return redirectToDashboardByRole(request, user.role);
     }
 
-    if (pathname === "/dashboard/barber" && user.role !== "BARBER") {
+    if (pathname.startsWith("/dashboard/barber") && user.role !== "BARBER") {
       return redirectToDashboardByRole(request, user.role);
     }
   }

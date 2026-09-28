@@ -369,20 +369,26 @@ export default function AgendarPage() {
                   </h3>
 
                   <div className="grid grid-cols-3 gap-3">
-                    {availableTimes.map((horario) => (
-                      <button
-                        onClick={() => {
-                          setSelectedTime(horario);
-                          setOpenTimes(false);
-                        }}
-                        className="rounded-lg border border-gray-700 bg-gray-700 px-4 py-3 text-gray-200 transition hover:border-blue-500 hover:bg-blue-600"
-                        type="button"
-                        key={horario}
-                        value={horario}
-                      >
-                        {horario}
-                      </button>
-                    ))}
+                    {availableTimes.length > 0 ? (
+                      availableTimes.map((horario) => (
+                        <button
+                          onClick={() => {
+                            setSelectedTime(horario);
+                            setOpenTimes(false);
+                          }}
+                          className="rounded-lg border border-gray-700 bg-gray-700 px-4 py-3 text-gray-200 transition hover:border-blue-500 hover:bg-blue-600"
+                          type="button"
+                          key={horario}
+                          value={horario}
+                        >
+                          {horario}
+                        </button>
+                      ))
+                    ) : (
+                      <p className="col-span-3 text-center text-gray-400">
+                        Não temos horários disponíveis neste dia.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
