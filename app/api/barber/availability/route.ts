@@ -102,6 +102,19 @@ export async function GET(req: NextRequest) {
       };
     });
 
+    console.log("NOW", now);
+
+    console.log("DATE PARAM", date);
+
+    console.log(
+      "BUSY SLOTS",
+      busySlots.map((appointment) => ({
+        raw: appointment.scheduledAt,
+      })),
+    );
+
+    console.log("OCCUPIED", occupiedTimes);
+
     return NextResponse.json(displayTimes);
   } catch (error) {
     console.log(error);
