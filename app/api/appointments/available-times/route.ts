@@ -74,7 +74,11 @@ export async function GET(req: NextRequest) {
 
     /* Filtrando os horários */
     const availableTimes = times.filter((time) => {
+      console.log("NOW", now.toISOString());
+
       const slotDate = new Date(`${date}T${time}:00`);
+
+      console.log("TIME:", time, "SLOT:", slotDate.toISOString());
 
       if (slotDate < now) {
         return false;
