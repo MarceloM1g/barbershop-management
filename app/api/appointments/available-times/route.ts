@@ -48,6 +48,7 @@ export async function GET(req: NextRequest) {
     /* Formatação */
     const occupiedTimes = busySlots.map((appointment) => {
       return appointment.scheduledAt.toLocaleTimeString("pt-BR", {
+        timeZone: "America/Sao_Paulo",
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
