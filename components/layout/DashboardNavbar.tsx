@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Logo from "@/assets/logo.png";
 import Image from "next/image";
 import Link from "next/link";
+import { House } from "lucide-react";
 
 export default function Navbar() {
   const [name, setName] = useState("");
@@ -52,34 +53,53 @@ export default function Navbar() {
   return (
     <header className="h-20 bg-[#171D25] border-b border-[#243D4F]">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
-        <Link href="/">
+        <Link href="/dashboard">
           <Image src={Logo} width={70} height={70} alt="Logo" />
         </Link>
 
-        <div className="relative">
-          <button
-            onClick={() => setOpen(!open)}
-            className="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-800 transition"
+        <div className="flex items-center gap-4">
+          <Link
+            href="/dashboard"
+            className="
+          flex items-center justify-center
+          rounded-lg
+          p-2.5
+          text-[#f7f7f7]
+          transition-colors duration-200
+          hover:bg-[#202731]
+          hover:text-white
+        "
+            aria-label="Home"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-700">
-              {name ? name[0].toUpperCase() : ""}
-            </div>
+            <House size={21} className="mr-2" />
+            Home
+          </Link>
 
-            <span className="font-medium">{name}</span>
+          <div className="relative">
+            <button
+              onClick={() => setOpen(!open)}
+              className="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-800 transition"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-700">
+                {name ? name[0].toUpperCase() : ""}
+              </div>
 
-            <span className="text-sm">▼</span>
-          </button>
+              <span className="font-medium">{name}</span>
 
-          {open && (
-            <div className="absolute right-0 top-full mt-2 z-50 w-48 rounded-lg border border-[#333] bg-[#171D25] shadow-xl p-2">
-              <button
-                onClick={logout}
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-zinc-800 transition"
-              >
-                Logout
-              </button>
-            </div>
-          )}
+              <span className="text-sm">▼</span>
+            </button>
+
+            {open && (
+              <div className="absolute right-0 top-full mt-2 z-50 w-48 rounded-lg border border-[#333] bg-[#171D25] shadow-xl p-2">
+                <button
+                  onClick={logout}
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-zinc-800 transition"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </header>

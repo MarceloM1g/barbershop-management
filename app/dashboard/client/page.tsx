@@ -151,7 +151,7 @@ export default function ClientPage() {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/dashboard/client/agendar"
-                className="flex items-center justify-center rounded-md border-2 border-[#1a9fff] bg-[#02090f] px-6 py-3 font-bold transition"
+                className="flex items-center justify-center rounded-md border-2 border-[#1a9fff] bg-[#02090f] px-6 py-3 font-bold transition hover:bg-[#1a9fff] hover:border-[#02090f] duration-700"
               >
                 Agendar horário
               </Link>

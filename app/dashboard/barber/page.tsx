@@ -138,13 +138,27 @@ export default function BarberPage() {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/dashboard/barber/agendamentos"
-                className="rounded-md bg-[#1a9fff] px-6 py-3 font-semibold text-[#f7f7f7] transition hover:bg-[#56abff] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+                className="
+    rounded-md
+    bg-[#1a9fff]
+    px-6 py-3
+    font-semibold
+    text-[#f7f7f7]
+    transition-colors
+    duration-200
+    hover:bg-[#56abff]
+    focus:outline-none
+    focus-visible:ring-2
+    focus-visible:ring-amber-400
+    focus-visible:ring-offset-2
+    focus-visible:ring-offset-zinc-900
+  "
               >
                 Agendamentos com você
               </Link>
               <Link
                 href="/dashboard/barber/availability"
-                 className="flex items-center justify-center rounded-md border-2 border-[#1a9fff] bg-[#02090f] px-6 py-3 font-bold transition"
+                className="flex items-center justify-center rounded-md border-2 border-[#1a9fff] bg-[#02090f] px-6 py-3 font-bold transition hover:bg-[#1a9fff] hover:border-[#02090f] duration-700"
               >
                 Sua Disponibilidade
               </Link>

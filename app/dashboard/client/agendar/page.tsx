@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import LoadingScreen from "@/components/ui/Loadingscreen";
+import { CornerUpLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function AgendarPage() {
   const [barbers, setBarbers] = useState<Barber[]>([]);
@@ -254,7 +256,13 @@ export default function AgendarPage() {
         </div>
       )}
 
-      <div className="flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
+        <Link href="/dashboard" className="block w-full max-w-2xl mb-4">
+          <div className="w-fit bg-[#202731] rounded-lg p-1 transition-colors duration-400 hover:bg-[#2a333f]">
+            <CornerUpLeft className="bg-[#171D25] rounded-lg p-1" />
+          </div>
+        </Link>
+
         <form
           className="w-full max-w-2xl bg-linear-to-t from-[#02090f] to-[#0a0f16] border border-[#333] rounded-3xl p-5 sm:p-10 shadow-2xl shadow-black/40"
           onSubmit={schedule}

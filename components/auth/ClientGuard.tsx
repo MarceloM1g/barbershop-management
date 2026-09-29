@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function ClientGuard({
@@ -10,22 +10,31 @@ export default function ClientGuard({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function checkAuth() {
-      const response = await fetch("/api/auth/me", {
-        cache: "no-store",
-      });
+      try {
+        const response = await fetch("/api/auth/me", {
+          cache: "no-store",
+        });
 
-      if (!response.ok) {
+        if (!response.ok) {
+          router.replace("/login");
+          return;
+        }
+
+        const user = await response.json();
+
+        if (user.role !== "CLIENT") {
+          router.replace("/dashboard/barber");
+          return;
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
         router.replace("/login");
-        return;
-      }
-
-      const user = await response.json();
-
-      if (user.role !== "CLIENT") {
-        router.replace("/dashboard/barber");
       }
     }
 
@@ -37,6 +46,14 @@ export default function ClientGuard({
       window.removeEventListener("pageshow", checkAuth);
     };
   }, [pathname, router]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p>Verificando sessão...</p>
+      </div>
+    );
+  }
 
   return children;
 }
